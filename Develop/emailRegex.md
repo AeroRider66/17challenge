@@ -89,17 +89,17 @@ There are several common escaped characters in REGEX. These include \., \\, \+, 
 ## Our Mystery Redex
 So what does our mystery redex say?  Let's see:
 
-### /^ (  [a-z0-9_\.-] + )  @ ( [\da-z\.-]  +) \.([a-z\.] {2,6}) $/
+### /^ (  [a-z0-9_\.-] + )  @ ( [\da-z\.-]  +) \. ([a-z\.] {2,6}) $/
 
 Our first grouping is:
 #### ( [a-z0-9_\.-] + )
 within this group we have a character set  
 #### [a-z0-9_\.-]
-This can be decoded to say in words "Match any character in the set"  of a-z == 0-9 == _ == \. == -  (separated by ==)
+This can be decoded to say in words "Match any character in the set"  of a-z(lower case) == 0-9 == _ == \. == -  (shown separated by == for clarity)
 
 followed by the plus character
 #### ( [...] + )
-which adds the quantifier of "match ONE OR MORE of the preceding"
+which adds the quantifier of "match ONE OR MORE of the preceding token"
 
 the 
 #### @
@@ -110,14 +110,43 @@ the next grouping is
 
 the character set is
 #### [\da-z\.-]
+with the \d meaning a digit, a-z (lower case), a period (' . '), a dash (' - ')
 and is once again followed by the
 #### +
-So we can read that as "match"
+So we can again read that as "match ONE or MORE" of the preceding token.
 
+In between the previous group and the last group, we have the
+#### (' \. ')
+indicating the specific (and literal) period (' . ')
 
+The final grouping is
+#### ([a-z\.] {2,6})
+can be read as a lower case letter between 'a' and 'z' or the literal period (' . ')
+the quantifier this time is
+#### {2,6} 
+giving the requirement have having at least 2 of the preceding character set, but no more than 6 of them.
+
+Finally, we have the 
+#### $/
+which shows the end of our expression.
+
+So changing the regex into English gives us: 
+#### "Match at least one character (from a-z, 0-9, an '_', a period '.' or a hyphen)"
+#### "then there must be a '@' symbol between that first group and the next"
+#### "then match at least one character (a digit or a-z or a period '.' or a hyphen'-')"
+#### "then there must be a period '.' (literal because of the leading\)"
+#### "then there must be at least 2 characters, but no more than 6 (from a-z, or a period '.'"
+
+An example using those parameters might be:
+jung2picachu@utsa.io 
+
+So at the end of it all:
+### /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/  describes an email address, but more to the point it shows you how an email address MUST be constructed.
 
 
 ## Author
 
 As I grew up, I noticed that I didn't see the world the same as many others did.  I saw cause-effect, I analyzed criteria of events around me, I even looked at math as 'fun'!  I think that seeing the world and its associated connectivity led me down the road to become an engineer, and now someone who is becoming a developer.  I'm looking forward to a bright future, and I hope you have enjoyed this brief look at this key aspect that every coder will use.
 Drop by and visit me at
+
+
